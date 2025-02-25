@@ -14,20 +14,25 @@ class RocchioAlgo:
 
         # weight for non-relevant documents
         self.gamma = gamma
-        self.vectorizer = TfidfVectorizer(stop_words='english')
+        self.vectorizer = TfidfVectorizer()
         
     def expand_query(self, query, relevant_docs, irrelevant_docs):
         # create corpus with query first, followed by documents
-        corpus = [query] + relevant_docs + irrelevant_docs
+        corpus = relevant_docs + irrelevant_docs
         
         # generate TF-IDF matrix
         tfidf_matrix = self.vectorizer.fit_transform(corpus)
         feature_names = np.array(self.vectorizer.get_feature_names_out())
-        
-        # extract vectors
-        query_vector = tfidf_matrix[0].toarray().flatten()
-        relevant_vectors = tfidf_matrix[1:len(relevant_docs)+1].toarray()
-        irrelevant_vectors = tfidf_matrix[len(relevant_docs)+1:].toarray()
+
+        query_terms = set(query.lower().split())
+        query_vector = np.zeros(len(feature_names))
+
+        for idx, term in enumerate(feature_names):
+            if term in query_terms:
+                query_vector[idx] = 1 
+
+        relevant_vectors = tfidf_matrix[0:len(relevant_docs)].toarray()
+        irrelevant_vectors = tfidf_matrix[len(relevant_docs):].toarray()
         
         # calculate centroids
         relevant_centroid = np.zeros_like(query_vector)
@@ -48,13 +53,12 @@ class RocchioAlgo:
         # get term weights
         term_weights = list(zip(feature_names, modified_vector))
         term_weights.sort(key=lambda x: x[1], reverse=True)
-        
+
         # filter existing query terms and non-alphabetic terms
-        query_terms = set(query.lower().split())
         expansion_terms = []
         for term, weight in term_weights:
             if (term.lower() not in query_terms and 
-                re.match(r'^[a-zA-Z]+$', term) and 
+                bool(re.search(r'[a-zA-Z]', term)) and 
                 weight > 0):
                 expansion_terms.append((term, weight))
                 if len(expansion_terms) == 2:  # Get top 2 new terms
