@@ -1,5 +1,6 @@
 # rocchio.py
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import normalize
 import numpy as np
 import re
 
@@ -42,22 +43,24 @@ class RocchioAlgo:
                          self.beta * relevant_centroid - 
                          self.gamma * irrelevant_centroid)
         
+        modified_vector = normalize(modified_vector.reshape(1, -1), norm='l2').flatten()
+        
         # get term weights
         term_weights = list(zip(feature_names, modified_vector))
         term_weights.sort(key=lambda x: x[1], reverse=True)
         
         # filter existing query terms and non-alphabetic terms
         query_terms = set(query.lower().split())
-        new_terms = []
+        expansion_terms = []
         for term, weight in term_weights:
             if (term.lower() not in query_terms and 
                 re.match(r'^[a-zA-Z]+$', term) and 
                 weight > 0):
-                new_terms.append((term, weight))
-                if len(new_terms) == 2:  # Get top 2 new terms
+                expansion_terms.append((term, weight))
+                if len(expansion_terms) == 2:  # Get top 2 new terms
                     break
                     
-        return query_terms, new_terms
+        return expansion_terms
     
     def get_expanded_query(self, query, relevant_docs, irrelevant_docs):
         """
@@ -66,10 +69,10 @@ class RocchioAlgo:
         Returns:
         str: Expanded query string with new terms added
         """
-        query_terms, new_terms = self.expand_query(query, relevant_docs, irrelevant_docs)
-        if not new_terms:
+        expansion_terms = self.expand_query(query, relevant_docs, irrelevant_docs)
+        if not expansion_terms:
             return None
-            
-        # add new terms to query
-        expanded_terms = list(query_terms) + [term for term, _ in new_terms]
-        return ' '.join(expanded_terms)
+        
+        expansion_terms = [term for term, _ in expansion_terms]
+
+        return expansion_terms
