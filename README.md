@@ -55,11 +55,13 @@
     To run the program, you need to use the Google Custom Search API key and Google Custom Search Engine ID above, as well as provide the desired precision, and the query you want to run.
 
    The format would be something like:
+
     ```
     python3 query_expansion.py YOUR_GOOGLE_API_KEY YOUR_GOOGLE_ENGINE_ID PRECISION "your search query"
     ```
 
    And an example would look like:
+   
     ```
     python3 query_expansion.py AIzaSy... Cx0123... 0.8 "machine learning"
     ```
