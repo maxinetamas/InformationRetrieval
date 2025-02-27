@@ -60,7 +60,7 @@
 
    And an example would look like:
 
-    python3 query_expansion.py AIzaSy... Cx0123... 0.8 "machine learning"
+    python3 query_expansion.py AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk c66d0519df77f44f1 0.8 "machine learning"
 
 ## Internal Design
 
