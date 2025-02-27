@@ -94,17 +94,4 @@ class RocchioAlgo:
         if not updated_query:
             return None
         
-<<<<<<< HEAD
         return updated_query, expansion_terms
-=======
-        ordered_terms = [term for term, _, _ in weighted_terms]
-        
-        original_terms = query.lower().split()
-        for term in original_terms:
-            if term not in [t.lower() for t in ordered_terms]:
-                ordered_terms.append(term)
-        
-        filtered_terms = [term for term in ordered_terms if term.lower() not in self.stopwords]
-
-        return filtered_terms
->>>>>>> 5653ae6f0497a617cf0d72ea9046c0fbbb0f679b
