@@ -121,7 +121,7 @@ This approach leverages the fact that search engines often give more weight to t
 
 Below is a sample transcript of the program's execution:
 
-```Parameters:
+Parameters:
 Client key = AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk
 Engine key = c66d0519df77f44f1
 Query = machine learning
@@ -150,4 +150,4 @@ Precision = 0.8
 ...
 ...
 ...
-Desired precision reached.```
+Desired precision reached.
