@@ -72,7 +72,7 @@ class RocchioAlgo:
                     elif bool(re.search(r'[a-zA-Z]', term)) and weight > 0:
                         all_weighted_terms.append((term, weight, False))  # False = new term
                         new_terms.append((term, weight))
-                        if len(new_terms) == 2:  # Still limit new terms to 2
+                        if len(new_terms) == 2:  
                             break
         
         all_weighted_terms.sort(key=lambda x: x[1], reverse=True)
@@ -92,13 +92,13 @@ class RocchioAlgo:
         if not weighted_terms:
             return query.split()
         
-        # Extract just the terms from the weighted terms list
         ordered_terms = [term for term, _, _ in weighted_terms]
         
-        # Add original query terms that might be missing
         original_terms = query.lower().split()
         for term in original_terms:
             if term not in [t.lower() for t in ordered_terms]:
                 ordered_terms.append(term)
         
-        return ordered_terms
+        filtered_terms = [term for term in ordered_terms if term.lower() not in self.stopwords]
+
+        return filtered_terms
