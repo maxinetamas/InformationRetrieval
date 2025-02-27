@@ -9,10 +9,10 @@
 
 ## Submitted Files
 - `query_expansion.py` - Main Python script implementing query expansion
-- `config.json` - Configuration file storing API keys and search engine ID
+- `rocchio.py` - Implementation of the Rocchio Algorithm
 - `requirements.txt` - List of required Python libraries
 - `README.md` - This documentation file
-- `results.txt` - Transcript of program runs on test cases
+- `proj1-stop.txt` - List of all of our stop words
 
 ## How to Run the Program
 This project is designed to run on a Google Cloud VM configured as per the provided setup instructions.
@@ -99,4 +99,5 @@ Precision@10: 0.82
 - Ensure that the API Key and Engine ID are properly configured in `config.json` before running.
 
 ---
-**End of README**
+
+
