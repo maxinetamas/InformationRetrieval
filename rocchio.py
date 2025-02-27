@@ -4,8 +4,12 @@ from sklearn.preprocessing import normalize
 import numpy as np
 import re
 
+def load_stopwords(filepath):
+    with open(filepath, 'r', encoding='utf-8') as f:
+        return set(word.strip().lower() for word in f.readlines())
+
 class RocchioAlgo:
-    def __init__(self, alpha=1.0, beta=0.75, gamma=0.15):
+    def __init__(self, alpha=1.0, beta=0.75, gamma=0.15, stopwords_file="./proj1-stop.txt"):
         # weight for original query vector
         self.alpha = alpha
 
@@ -14,6 +18,8 @@ class RocchioAlgo:
 
         # weight for non-relevant documents
         self.gamma = gamma
+
+        self.stopwords = load_stopwords(stopwords_file)
         self.vectorizer = TfidfVectorizer()
         
     def expand_query(self, query, relevant_docs, irrelevant_docs):
@@ -63,8 +69,14 @@ class RocchioAlgo:
                 expansion_terms.append((term, weight))
                 if len(expansion_terms) == 2:  # Get top 2 new terms
                     break
-                    
-        return expansion_terms
+        
+        candidate_terms = [term for term, _ in term_weights if term.lower() not in query_terms]
+        filtered_expansion_terms = [term for term, _ in expansion_terms if term not in self.stopwords]
+
+        if not filtered_expansion_terms:
+            filtered_expansion_terms = next((term for term in candidate_terms if term.lower() not in self.stopwords), [])
+
+        return filtered_expansion_terms
     
     def get_expanded_query(self, query, relevant_docs, irrelevant_docs):
         """
@@ -76,7 +88,5 @@ class RocchioAlgo:
         expansion_terms = self.expand_query(query, relevant_docs, irrelevant_docs)
         if not expansion_terms:
             return None
-        
-        expansion_terms = [term for term, _ in expansion_terms]
 
         return expansion_terms
