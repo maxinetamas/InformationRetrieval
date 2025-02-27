@@ -69,7 +69,7 @@ class RocchioAlgo:
                     if term.lower() in query_terms and weight > 0:
                         all_weighted_terms.append((term, weight, True))  # True = original query term
                     # For new terms, only consider alphabetic terms with positive weight
-                    elif bool(re.search(r'[a-zA-Z]', term)) and term not in self.stopwords and weight > 0:
+                    elif bool(re.search(r'[a-zA-Z]', term)) and weight > 0:
                         all_weighted_terms.append((term, weight, False))  # False = new term
                         new_terms.append((term, weight))
                         if len(new_terms) == 2:  # Still limit new terms to 2

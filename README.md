@@ -54,50 +54,83 @@ The project consists of the following main components:
 - `json` - For handling API responses and configurations
 - `argparse` - For parsing command-line arguments
 
-## Query Modification Method
-The core component of this project is the query expansion process using the **Rocchio Algorithm**, which follows these steps:
+### Query Modification Method
+
+The core component of this project is the query expansion process using the Rocchio Algorithm, which follows these steps:
+
 1. **Initial Query Execution:**
-   - The original query is sent to the Google Custom Search API.
+
+   The original query is sent to the Google Custom Search API.
+
 2. **Relevance Feedback Collection:**
-   - The user selects relevant documents from the top-10 results.
+
+   The user marks each of the top-10 results as relevant (Y) or non-relevant (N).
+
 3. **Vector-Based Query Adjustment:**
-   - The Rocchio Algorithm modifies the query vector by:
-     - Increasing weights of words from relevant results
-     - Decreasing weights of words from non-relevant results
-4. **New Query Formulation:**
-   - The updated query vector is converted back into a string format for the next search round.
+
+   The Rocchio Algorithm modifies the query vector by:
+   - Increasing weights of terms from relevant results
+   - Decreasing weights of terms from non-relevant results
+
+4. **Term Reordering and Expansion:**
+
+   Our enhanced implementation:
+   - Reorders ALL terms (both original and new) based on their TF-IDF weights
+   - Places the most discriminative terms first in the query
+   - Adds up to 2 new high-weight terms not in the original query
+
 5. **Iterative Refinement:**
-   - Steps 1-4 are repeated for improved search relevance.
+
+   Steps 1-4 are repeated until the target precision is reached or no improvement is possible.
 
 ### Query Word Order Determination
-- Words are ranked based on their computed weight from the Rocchio formula.
-- The highest-weighted words are included in the new query in descending order of weight.
 
-## API Credentials
-- **Google Custom Search API Key:** `[Your API Key]`
-- **Google Custom Search Engine ID:** `[Your Engine ID]`
+Our implementation improves upon basic Rocchio by:
+- Computing weights for all terms (original query + potential new terms)
+- Sorting terms by their weight in descending order
+- Creating a new query that maintains this weight-based ordering
 
-## Program Run Transcripts
-Below is a transcript of the program’s execution for the three test cases:
+This approach leverages the fact that search engines often give more weight to terms that appear earlier in the query.
 
-```
-Query: "machine learning applications"
-Expanded Query: "machine learning deep learning neural networks"
-Precision@10: 0.8
+### API Credentials
 
-Query: "climate change impact"
-Expanded Query: "climate change global warming environmental effects"
-Precision@10: 0.75
+- **Google Custom Search API Key:** Required as the first command-line argument
+- **Google Custom Search Engine ID:** Required as the second command-line argument
 
-Query: "stock market prediction"
-Expanded Query: "stock market forecasting investment trends"
-Precision@10: 0.82
-```
+### Program Run Transcripts
 
-## Additional Notes
-- The program allows for multiple rounds of refinement to improve results.
-- Ensure that the API Key and Engine ID are properly configured in `config.json` before running.
+Below is a sample transcript of the program's execution:
 
----
+```bash
+Parameters:
+    Client key  = YOUR_GOOGLE_API_KEY
+    Engine key  = YOUR_GOOGLE_ENGINE_ID
+    Query       = machine learning
+    Precision   = 0.8
 
+Google Search Results:
+======================
+Result 1
+[
+ URL: https://example.com/1
+ Title: Introduction to Machine Learning
+ Summary: Machine learning is a subfield of artificial intelligence...
+]
+Relevant (Y/N)? Y
+[results continued...]
 
+FEEDBACK SUMMARY
+Query: machine learning
+Precision: 0.6
+Still below the desired precision of 0.8
+Indexing results...
+Indexing results...
+Augmenting by deep neural
+
+Parameters:
+    Client key  = YOUR_GOOGLE_API_KEY
+    Engine key  = YOUR_GOOGLE_ENGINE_ID
+    Query       = deep neural machine learning
+    Precision   = 0.8
+
+[second iteration continues...]
