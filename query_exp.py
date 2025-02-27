@@ -96,7 +96,7 @@ def main(google_api_key, google_engine_id, precision, query):
         if cur_precision >= precision:
             print("Desired precision reached.")
             break
-        
+
         updated_query, expansion_terms = rocchio.get_expanded_query(query, rlvnt_docs, irrlvnt_docs)
                 
         print_feedback_summary(query, cur_precision, precision, expansion_terms)
