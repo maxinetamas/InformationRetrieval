@@ -57,7 +57,7 @@ This project is designed to run on a Google Cloud VM configured as per the provi
     python3 query_expansion.py YOUR_GOOGLE_API_KEY YOUR_GOOGLE_ENGINE_ID PRECISION "your search query"
     ```
 
-    Replace `YOUR_GOOGLE_API_KEY`, `YOUR_GOOGLE_ENGINE_ID`, `PRECISION` and `"your search query"` with your actual API key, engine ID, desired precision, and search query. For example:
+    Replace `YOUR_GOOGLE_API_KEY`, `YOUR_GOOGLE_ENGINE_ID`, `PRECISION` and `"your search query"` with your actual API key, engine ID, desired precision, and search query. Our credentials are included below. For example:
 
     ```
     python3 query_expansion.py AIzaSy... Cx0123... 0.8 "machine learning"
