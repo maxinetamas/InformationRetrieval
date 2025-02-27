@@ -55,14 +55,12 @@
     To run the program, you need to use the Google Custom Search API key and Google Custom Search Engine ID above, as well as provide the desired precision, and the query you want to run.
 
    The format would be something like:
-    ```
+
     python3 query_expansion.py YOUR_GOOGLE_API_KEY YOUR_GOOGLE_ENGINE_ID PRECISION "your search query"
-    ```
 
    And an example would look like:
-    ```
-    python3 query_expansion.py AIzaSy... Cx0123... 0.8 "machine learning"
-    ```
+
+    python3 query_expansion.py AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk c66d0519df77f44f1 0.8 "machine learning"
 
 ## Internal Design
 
@@ -123,7 +121,8 @@ This approach leverages the fact that search engines often give more weight to t
 
 Below is a sample transcript of the program's execution:
 
-```Parameters:
+```
+Parameters:
 Client key = AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk
 Engine key = c66d0519df77f44f1
 Query = machine learning
@@ -152,4 +151,4 @@ Precision = 0.8
 ...
 ...
 ...
-Desired precision reached.```
+Desired precision reached.
