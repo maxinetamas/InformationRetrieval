@@ -101,11 +101,10 @@ def main(google_api_key, google_engine_id, precision, query):
 
         # If expansion_terms is a list of all terms (original + new):
         new_terms = [term for term in expansion_terms if term.lower() not in set(term.lower() for term in original_query_terms)]
-        new_terms = new_terms[:2]  # Limit to 2 new terms
+        new_terms = new_terms[:2]
                 
         print_feedback_summary(query, cur_precision, precision, new_terms)
-                
-        # Use the full reordered terms list for the next query
+
         query = " ".join(expansion_terms)
 
         # print(expansion_terms)
