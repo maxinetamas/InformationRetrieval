@@ -97,21 +97,11 @@ def main(google_api_key, google_engine_id, precision, query):
             print("Desired precision reached.")
             break
         
-        expansion_terms = rocchio.get_expanded_query(query, rlvnt_docs, irrlvnt_docs)
-
-        # If expansion_terms is a list of all terms (original + new):
-        new_terms = [term for term in expansion_terms if term.lower() not in set(term.lower() for term in original_query_terms)]
-        new_terms = new_terms[:2]  # Limit to 2 new terms
+        updated_query, expansion_terms = rocchio.get_expanded_query(query, rlvnt_docs, irrlvnt_docs)
                 
-        print_feedback_summary(query, cur_precision, precision, new_terms)
+        print_feedback_summary(query, cur_precision, precision, expansion_terms)
                 
-        # Use the full reordered terms list for the next query
-        query = " ".join(expansion_terms)
-
-        # print(expansion_terms)
-        # expansion_terms = " ".join(expansion_terms)
-        # print_feedback_summary(query, cur_precision, precision, expansion_terms)
-        # query = f"{query} {expansion_terms}"
+        query = updated_query
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="COMSW6111 - Project 1")

@@ -60,45 +60,38 @@ class RocchioAlgo:
         term_weights = list(zip(feature_names, modified_vector))
         term_weights.sort(key=lambda x: x[1], reverse=True)
 
-        # filter existing query terms and non-alphabetic terms
-        all_weighted_terms = []
-        new_terms = []
+        candidate_terms = [term for term, _ in term_weights if term.lower() not in query_terms]
 
+        expansion_terms = []
         for term, weight in term_weights:
-                    # Check if term is in the original query
-                    if term.lower() in query_terms and weight > 0:
-                        all_weighted_terms.append((term, weight, True))  # True = original query term
-                    # For new terms, only consider alphabetic terms with positive weight
-                    elif bool(re.search(r'[a-zA-Z]', term)) and term not in self.stopwords and weight > 0:
-                        all_weighted_terms.append((term, weight, False))  # False = new term
-                        new_terms.append((term, weight))
-                        if len(new_terms) == 2:  # Still limit new terms to 2
-                            break
+            if (term.lower() not in query_terms and 
+                bool(re.search(r'[a-zA-Z]', term)) and 
+                weight > 0):
+                expansion_terms.append((term, weight))
+                if len(expansion_terms) == 2:
+                    break
         
-        all_weighted_terms.sort(key=lambda x: x[1], reverse=True)
-        
-        return all_weighted_terms
-        
-        # candidate_terms = [term for term, _ in term_weights if term.lower() not in query_terms]
-        # filtered_expansion_terms = [term for term, _ in expansion_terms if term not in self.stopwords]
+        # remove stopwords from the selected expansion terms
+        filtered_expansion_terms = [term for term, _ in expansion_terms if term not in self.stopwords]
 
-        # if not filtered_expansion_terms:
-        #     filtered_expansion_terms = next((term for term in candidate_terms if term.lower() not in self.stopwords), [])
+        # if both expansion terms were stopwords, select a new term
+        if not filtered_expansion_terms:
+             filtered_expansion_terms = next((term for term in candidate_terms if term.lower() not in self.stopwords), [])
 
-        # return filtered_expansion_terms
+        # determine the term order of the new query
+        # use tf-idf weights to order the query and expansion terms
+        index_map = {key: i for i, (key, _) in enumerate(term_weights)}
+        updated_query_list = filtered_expansion_terms + list(query_terms)
+        
+        sorted_query_list = sorted(updated_query_list, key=lambda x: index_map.get(x, float('inf')))
+
+        updated_query = " ".join(sorted_query_list)
+        
+        return updated_query, filtered_expansion_terms
     
     def get_expanded_query(self, query, relevant_docs, irrelevant_docs):
-        weighted_terms = self.expand_query(query, relevant_docs, irrelevant_docs)
-        if not weighted_terms:
-            return query.split()
+        updated_query, expansion_terms = self.expand_query(query, relevant_docs, irrelevant_docs)
+        if not updated_query:
+            return None
         
-        # Extract just the terms from the weighted terms list
-        ordered_terms = [term for term, _, _ in weighted_terms]
-        
-        # Add original query terms that might be missing
-        original_terms = query.lower().split()
-        for term in original_terms:
-            if term not in [t.lower() for t in ordered_terms]:
-                ordered_terms.append(term)
-        
-        return ordered_terms
+        return updated_query, expansion_terms
