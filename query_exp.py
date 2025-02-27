@@ -69,11 +69,13 @@ def print_feedback_summary(query, cur_precision, desired_precision, expansion_te
     Still below the desired precision of {desired_precision}
     Indexing results...
     Indexing results...
-    Augmenting by {expansion_terms}
+    Augmenting by {' '.join(expansion_terms)}
     """)
 
 def main(google_api_key, google_engine_id, precision, query):
     rocchio = RocchioAlgo()
+    original_query_terms = query.split()
+
     while True:
         print_parameters(google_api_key, google_engine_id, precision, query)
 
@@ -96,10 +98,20 @@ def main(google_api_key, google_engine_id, precision, query):
             break
         
         expansion_terms = rocchio.get_expanded_query(query, rlvnt_docs, irrlvnt_docs)
-        print(expansion_terms)
-        expansion_terms = " ".join(expansion_terms)
-        print_feedback_summary(query, cur_precision, precision, expansion_terms)
-        query = f"{query} {expansion_terms}"
+
+        # If expansion_terms is a list of all terms (original + new):
+        new_terms = [term for term in expansion_terms if term.lower() not in set(term.lower() for term in original_query_terms)]
+        new_terms = new_terms[:2]  # Limit to 2 new terms
+                
+        print_feedback_summary(query, cur_precision, precision, new_terms)
+                
+        # Use the full reordered terms list for the next query
+        query = " ".join(expansion_terms)
+
+        # print(expansion_terms)
+        # expansion_terms = " ".join(expansion_terms)
+        # print_feedback_summary(query, cur_precision, precision, expansion_terms)
+        # query = f"{query} {expansion_terms}"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="COMSW6111 - Project 1")
