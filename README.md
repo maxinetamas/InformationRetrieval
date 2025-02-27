@@ -2,8 +2,6 @@
 
 **Advanced Database Systems - Project 1**
 
-# README - Query Expansion using Google Custom Search API and Rocchio Algorithm
-
 ## Team Information
 
 -   **Names:** Begum Cicekdag, Maxine Tamas
@@ -17,9 +15,12 @@
 -   `README.md` - This documentation file
 -   `proj1-stop.txt` - List of all of our stop words
 
-## How to Run the Program
+### API Credentials
 
-This project is designed to run on a Google Cloud VM configured as per the provided setup instructions.
+-   **Google Custom Search API Key:** 
+```AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk```
+-   **Google Custom Search Engine ID:** 
+```c66d0519df77f44f1```
 
 ### Setup Instructions:
 
@@ -51,14 +52,14 @@ This project is designed to run on a Google Cloud VM configured as per the provi
 
 5.  **Run the Program:**
 
-    To run the program, you need to provide your Google Custom Search API key, your Google Custom Search Engine ID, the desired precision, and the query you want to run.
+    To run the program, you need to use the Google Custom Search API key and Google Custom Search Engine ID above, as well as provide the desired precision, and the query you want to run.
 
+   The format would be something like:
     ```
     python3 query_expansion.py YOUR_GOOGLE_API_KEY YOUR_GOOGLE_ENGINE_ID PRECISION "your search query"
     ```
 
-    Replace `YOUR_GOOGLE_API_KEY`, `YOUR_GOOGLE_ENGINE_ID`, `PRECISION` and `"your search query"` with your actual API key, engine ID, desired precision, and search query. Our credentials are included below. For example:
-
+   And an example would look like:
     ```
     python3 query_expansion.py AIzaSy... Cx0123... 0.8 "machine learning"
     ```
@@ -118,13 +119,6 @@ Our implementation improves upon basic Rocchio by:
 
 This approach leverages the fact that search engines often give more weight to terms that appear earlier in the query.
 
-### API Credentials
-
--   **Google Custom Search API Key:** 
-```AIzaSyDSfAcOzN3SyrUDN2fCe_QNIIx3sOLN5Rk```
--   **Google Custom Search Engine ID:** 
-```c66d0519df77f44f1```
-
 ### Program Run Transcripts
 
 Below is a sample transcript of the program's execution:
@@ -154,4 +148,8 @@ Client key = YOUR_GOOGLE_API_KEY
 Engine key = YOUR_GOOGLE_ENGINE_ID
 Query = deep neural machine learning
 Precision = 0.8
-[second iteration continues...]```
+[second iteration continues...]
+...
+...
+...
+Desired precision reached.```
